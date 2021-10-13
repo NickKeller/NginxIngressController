@@ -1,0 +1,12 @@
+name: 'Deploy Nginx Ingress Controller'
+description: "Deploys an Nginx Ingress Controller to a K8s cluster"
+inputs:
+  kubeconfig:
+    description: Path to kubeconfig file
+    required: false
+    default: "~/.kube/config"
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.kubeconfig }}
