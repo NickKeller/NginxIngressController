@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM gambtho/azurecli_terraform:latest
 
 COPY entrypoint.sh /entrypoint.sh
 
