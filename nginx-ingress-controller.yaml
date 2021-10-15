@@ -59,6 +59,7 @@ metadata:
   labels:
     app: nginx-ingress
   name: nginx-ingress
+  namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -66,6 +67,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: nginx-ingress
+    namespace: default
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -102,7 +104,7 @@ spec:
     matchLabels:
       app: nginx-ingress
       component: controller
-  replicas: 4
+  replicas: 1
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -135,7 +137,7 @@ spec:
           imagePullPolicy: IfNotPresent
           args:
             - /nginx-ingress-controller
-            - --default-backend-service=nginx-ingress-default-backend
+            - --default-backend-service=default/nginx-ingress-default-backend-service
             - --election-id=ingress-controller-leader
             - --ingress-class=nginx
             - --configmap=nginx-ingress-controller
@@ -197,10 +199,6 @@ spec:
             timeoutSeconds: 1
             successThreshold: 1
             failureThreshold: 3
-          resources:
-            requests:
-              cpu: 2
-              memory: 500Mi
       serviceAccountName: nginx-ingress
 ---
 apiVersion: policy/v1beta1
@@ -251,14 +249,16 @@ spec:
   selector:
     app: nginx-ingress
     component: controller
-  type: LoadBalancer---
+  type: LoadBalancer
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: nginx-ingress
     component: default-backend
-  name: nginx-ingress-default-backend
+  name: nginx-ingress-default-backend-service
+  namespace: default
 spec:
   selector:
     matchLabels:
@@ -304,7 +304,8 @@ metadata:
   labels:
     app: nginx-ingress
     component: default-backend
-  name: nginx-ingress-default-backend
+  name: nginx-ingress-default-backend-service
+  namespace: default
 spec:
   ports:
     - name: http
