@@ -1,3 +1,3 @@
 set -e
 
-kubectl apply -f nginx-ingress-controller.yaml
+kubectl apply -f https://raw.githubusercontent.com/NickKeller/NginxIngressController/main/nginx-ingress-controller.yaml
