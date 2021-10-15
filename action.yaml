@@ -3,5 +3,3 @@ description: "Deploys an Nginx Ingress Controller to a K8s cluster"
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.kubeconfig }}
